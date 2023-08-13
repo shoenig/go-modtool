@@ -19,11 +19,29 @@ type Dependency struct {
 	Version semantic.Tag
 }
 
+func (d Dependency) Hash() string {
+	return d.Name
+}
+
 func (d Dependency) String() string {
 	if d.Version.Equal(zero) {
 		return d.Name
 	}
 	return fmt.Sprintf("%s %s", d.Name, d.Version)
+}
+
+func (d Dependency) Cmp(o Dependency) int {
+	if d.Name < o.Name {
+		return -1
+	} else if d.Name > o.Name {
+		return 1
+	}
+	if d.Version.Less(o.Version) {
+		return -1
+	} else if o.Version.Less(d.Version) {
+		return 1
+	}
+	return 0
 }
 
 type ReplaceStanza struct {
@@ -42,6 +60,14 @@ func (rs *ReplaceStanza) empty() bool {
 type Replacement struct {
 	Orig Dependency
 	Next Dependency
+}
+
+func (r Replacement) Hash() string {
+	return r.Orig.Name
+}
+
+func (r Replacement) Cmp(o Replacement) int {
+	return r.Orig.Cmp(o.Orig)
 }
 
 func (r Replacement) String() string {

@@ -93,10 +93,10 @@ func (t *Tool) merge(args []string) error {
 		return err
 	}
 
-	fmt.Println("original", original)
-	fmt.Println("next", next)
-
-	return nil
+	content := modfile.Merge(original, next)
+	content.Replace.Comment = t.repsComment
+	content.ReplaceSub.Comment = t.subsComment
+	return t.write(content)
 }
 
 func (t *Tool) write(content *modfile.Content) error {
