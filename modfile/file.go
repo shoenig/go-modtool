@@ -187,15 +187,6 @@ func read(r io.Reader) (*Content, error) {
 	return process(f)
 }
 
-func commentOf(c []modpkg.Comment) string {
-	var sb strings.Builder
-	for _, comment := range c {
-		sb.WriteString(comment.Token)
-		sb.WriteString("\n")
-	}
-	return sb.String()
-}
-
 func process(f *modpkg.File) (*Content, error) {
 	c := new(Content)
 

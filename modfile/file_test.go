@@ -33,7 +33,8 @@ func TestContent_Write(t *testing.T) {
 			must.NoError(t, err)
 
 			var b bytes.Buffer
-			c.Write(&b)
+			err = c.Write(&b)
+			must.NoError(t, err)
 
 			must.Eq(t, cat(t, exp), b.String())
 		})
