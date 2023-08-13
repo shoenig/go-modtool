@@ -63,14 +63,14 @@ By default the output is printed to standard out. Use the `-w` flag to overwrite
 input `go.mod` file in place.
 
 ```shell
-modmerge fmt -w go.mod
+modmerge -w fmt go.mod
 ```
 
 The following flags enable specifying comments in the resulting `go.mod` file.
 
-- `-replace-comment` - Insert a comment before the `replace` stanza for third party modules.
+- `--replace-comment` - Insert a comment before the `replace` stanza for third party modules.
 
-- `subs-comment` - Insert a comment before the `replace` stanza for submodules.
+- `--subs-comment` - Insert a comment before the `replace` stanza for submodules.
 
 #### merge
 
