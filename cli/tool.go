@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/shoenig/modmerge/modfile"
+	"github.com/shoenig/modtool/modfile"
 )
 
 const (

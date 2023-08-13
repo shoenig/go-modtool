@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/shoenig/modmerge/cli"
+	"github.com/shoenig/modtool/cli"
 )
 
 func main() {
