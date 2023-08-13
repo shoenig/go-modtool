@@ -1,0 +1,25 @@
+module github.com/shoenig/example
+
+go 1.21
+
+// This is a comment about replacements.
+replace (
+    example.com/c/d => example.com/x/y v0.4.0
+)
+
+// This is a comment about submodules.
+replace (
+    github.com/shoenig/example/api => ./api
+)
+
+require (
+    example.com/a/b v1.0.0
+    example.com/c/d v1.1.0
+    example.com/e/f v1.2.0
+    github.com/shoenig/example/api v1.1.1
+)
+
+require (
+    example.com/g/h v1.3.0 // indirect
+)
+

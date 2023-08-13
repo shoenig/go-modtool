@@ -15,11 +15,14 @@ const (
 )
 
 type Tool struct {
+	writeFile   bool   // overwrite file(s) in place
 	repsComment string // replacement block
 	subsComment string // replacement block for submodules
+	modFile     string // the go.mod file
 }
 
 func (t *Tool) flags() []string {
+	flag.BoolVar(&t.writeFile, "w", false, "Write go.mod/go.sum file(s) in place")
 	flag.StringVar(&t.repsComment, "replace-comment", "", "Comment for replace stanza")
 	flag.StringVar(&t.subsComment, "subs-comment", "", "Comment for submodules replace stanza")
 	flag.Parse()
@@ -44,7 +47,7 @@ func (t *Tool) Run() int {
 	}
 
 	if err != nil {
-		fmt.Println("failure:", err)
+		fmt.Fprintln(os.Stderr, "crash:", err)
 		return exitFailure
 	}
 
@@ -60,17 +63,15 @@ func (t *Tool) fmt(args []string) error {
 		return errors.New("must specify only one go.mod file")
 	}
 
-	original, err := modfile.Open(args[0])
+	t.modFile = args[0]
+	content, err := modfile.Open(t.modFile)
 	if err != nil {
 		return err
 	}
 
-	original.Replace.Comment = t.repsComment
-	original.ReplaceSub.Comment = t.subsComment
-
-	original.Write(os.Stdout)
-
-	return nil
+	content.Replace.Comment = t.repsComment
+	content.ReplaceSub.Comment = t.subsComment
+	return t.write(content)
 }
 
 func (t *Tool) merge(args []string) error {
@@ -99,5 +100,21 @@ func (t *Tool) merge(args []string) error {
 }
 
 func (t *Tool) write(content *modfile.Content) error {
-	return nil
+	if t.writeFile {
+		f, err := os.OpenFile(t.modFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
+		if err != nil {
+			return err
+		}
+		if err = content.Write(f); err != nil {
+			return err
+		}
+		if err = f.Sync(); err != nil {
+			return err
+		}
+		if err = f.Close(); err != nil {
+			return err
+		}
+		return nil
+	}
+	return content.Write(os.Stdout)
 }
