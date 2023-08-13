@@ -56,3 +56,7 @@ func TestTool_fmt(t *testing.T) {
 
 	compare(t, "tests/a.expect", modFile)
 }
+
+func TestTool_merge(t *testing.T) {
+	// eh todo
+}
