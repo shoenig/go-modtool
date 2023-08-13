@@ -1,6 +1,6 @@
 # modmerge
 
-An opinionated tool to format and merge `go.mod` (and `go.sum`) files.
+An opinionated tool to format and merge `go.mod` (and soon `go.sum`) files.
 
 ## Overview
 
@@ -11,7 +11,7 @@ files in a way that is consistent no matter the input.
 
 Projects which need to merge `go.mod` files will also experience pain in how git often
 fails to resolve conflicts for `go.mod` and `go.sum` files. This `modmerge` tool can be
-used to intelligently merge `go.mod` and `go.sum` files so that merge conflicts are 
+used to merge `go.mod` and `go.sum` with better context files so that merge conflicts are 
 automatically resolved, every time.
 
 ### Strict go.mod Format
@@ -74,7 +74,24 @@ The following flags enable specifying comments in the resulting `go.mod` file.
 
 #### merge
 
-TBD
+The `merge` subcommand is used to merge two `go.mod` files.
+
+The motivating use case for this is in merging the `go.mod` file of an OSS version
+of a repository with a private ENT version of the same reposotiry, where the ENT
+version is a superset of OSS. Conflicts happen because git is not smart enough to
+resolve differences caused by module changes in nearby lines.
+
+```shell
+modmerge merge /ent/go.mod /oss/go.mod
+```
+
+The same CLI arguments from the `fmt` command apply to the `merge` command.
+
+- `-w` - Write the output to the first `go.mod` file in the input.
+
+- `--replace-comment` - Insert a comment before the `replace` stanza for third party modules.
+
+- `--subs-comment` - Insert a comment before the `replace` stanza for submodules.
 
 ## Contributing
 
