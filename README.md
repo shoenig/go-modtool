@@ -93,6 +93,9 @@ The same CLI arguments from the `fmt` command apply to the `merge` command.
 
 - `--subs-comment` - Insert a comment before the `replace` stanza for submodules.
 
+Note that it is imperative to run `go mod tidy` after doing a merge to ensure only
+the necessary modules remain in the resulting `go.mod` and `go.sum` files.
+
 ## Contributing
 
 The `github.com/shoenig/go-modmerge` module / cli tool is always improving with new features
