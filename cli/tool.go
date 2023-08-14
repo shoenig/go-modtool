@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/shoenig/modtool/modfile"
+	"github.com/shoenig/go-modtool/modfile"
 )
 
 const (
