@@ -1,4 +1,4 @@
-NAME = modtool
+NAME = go-modtool
 
 .PHONY: build
 build: clean

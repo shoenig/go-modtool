@@ -1,4 +1,4 @@
-# modtool
+# go-modtool
 
 An opinionated tool to format and merge `go.mod` (and soon `go.sum`) files.
 
@@ -6,11 +6,11 @@ An opinionated tool to format and merge `go.mod` (and soon `go.sum`) files.
 
 Although the `go mod tidy` command provided by the Go compiler will format `go.mod` files,
 the way it does so is not strongly opinionated. Often, you'll end up with multiple `replace`
-stanzas where only one was intended. This `modtool` tool provides a way to format `go.mod`
+stanzas where only one was intended. This `go-modtool` tool provides a way to format `go.mod`
 files in a way that is consistent no matter the input.
 
 Projects which need to merge `go.mod` files will also experience pain in how git often
-fails to resolve conflicts for `go.mod` and `go.sum` files. This `modtool` tool can be
+fails to resolve conflicts for `go.mod` and `go.sum` files. This `go-modtool` tool can be
 used to merge `go.mod` and `go.sum` with better context files so that merge conflicts are 
 automatically resolved, every time.
 
@@ -31,11 +31,11 @@ The strongly opinionated format of a `go.mod` file is described below.
 - A `require` stanza appears next (if necessary) for indirect dependencies.
 
 Comments are disallowed, with exceptions being enabled by specifying them through
-arguments to the `modtool fmt` command.
+arguments to the `go-modtool fmt` command.
 
 ## Getting Started
 
-`modtool` is a command line tool written in Go. It can be built from source, installed
+`go-modtool` is a command line tool written in Go. It can be built from source, installed
 via `go install`, or downloaded from [Releases](https://github.com/shoenig/go-modtool/releases).
 
 #### Install
@@ -48,7 +48,7 @@ go install github.com/shoenig/go-modtool@latest
 
 ## Subcommands
 
-The `modtool` command line tool provides two subcommands, for formatting and merging
+The `go-modtool` command line tool provides two subcommands, for formatting and merging
 `go.mod` files.
 
 #### fmt
@@ -56,14 +56,14 @@ The `modtool` command line tool provides two subcommands, for formatting and mer
 The `fmt` subcommand is used to format a `go.mod` file.
 
 ```shell
-modtool fmt go.mod
+go-modtool fmt go.mod
 ```
 
 By default the output is printed to standard out. Use the `-w` flag to overwrite the
 input `go.mod` file in place.
 
 ```shell
-modtool -w fmt go.mod
+go-modtool -w fmt go.mod
 ```
 
 The following flags enable specifying comments in the resulting `go.mod` file.
@@ -82,7 +82,7 @@ version is a superset of OSS. Conflicts happen because git is not smart enough t
 resolve differences caused by module changes in nearby lines.
 
 ```shell
-modtool merge /ent/go.mod /oss/go.mod
+go-modtool merge /ent/go.mod /oss/go.mod
 ```
 
 The same CLI arguments from the `fmt` command apply to the `merge` command.
