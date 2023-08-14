@@ -1,4 +1,4 @@
-module github.com/shoenig/modtool
+module github.com/shoenig/go-modtool
 
 go 1.21
 
