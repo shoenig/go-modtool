@@ -36,7 +36,7 @@ arguments to the `modtool fmt` command.
 ## Getting Started
 
 `modtool` is a command line tool written in Go. It can be built from source, installed
-via `go install`, or downloaded from Releases.
+via `go install`, or downloaded from [Releases](https://github.com/shoenig/go-modtool/releases).
 
 #### Install
 
