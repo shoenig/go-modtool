@@ -1,7 +1,7 @@
 github.com/google/go-cmp v0.5.9 h1:O2Tfq5qg4qc4AmwVlvv0oLiVAGB7enBSJ2x2DqQFi38=
 github.com/google/go-cmp v0.5.9/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
-github.com/hashicorp/go-set v0.1.13 h1:k1B5goY3c7OKEzpK+gwAhJexxzAJwDN8kId8YvWrihA=
-github.com/hashicorp/go-set v0.1.13/go.mod h1:0/D+R4MFUzJ6XmvjU7liXtznF1eQDxh84GJlhXw+lvo=
+github.com/hashicorp/go-set/v2 v2.0.0-alpha.2 h1:lSoXIz3jTo0nNQ17H7tgB2iletJTaUF73mbEZ5Z91tM=
+github.com/hashicorp/go-set/v2 v2.0.0-alpha.2/go.mod h1:6q4nh8UCVZODn2tJ5RbJi8+ki7pjZBsAEYGt6yaGeTo=
 github.com/shoenig/ignore v0.4.0 h1:qPOWs0slbPMtenC0H3cKvu5Kn3hQFTE3yK6YJvyNDlA=
 github.com/shoenig/ignore v0.4.0/go.mod h1:VF91FoiYAwXq4KinOq6zP5xfFw/Ib6MfftaGKYTpmwo=
 github.com/shoenig/regexplus v0.3.0 h1:+eJZ5P4y1IY4+NgkIIvIqqdG/uYRBuSg4vWUjEppLcY=

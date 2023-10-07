@@ -26,6 +26,39 @@ func TestMerge(t *testing.T) {
 			},
 		},
 		{
+			name: "upgrade",
+			ent: &Content{
+				Module: "module",
+				Go:     "1.20",
+				Direct: RequireStanza{Dependencies: []Dependency{
+					{Name: "example.com/one/blue", Version: semantic.New(1, 0, 0)},
+				}},
+				Indirect:   RequireStanza{Dependencies: make([]Dependency, 0)},
+				Replace:    ReplaceStanza{Replacements: make([]Replacement, 0)},
+				ReplaceSub: ReplaceStanza{Replacements: make([]Replacement, 0)},
+			},
+			oss: &Content{
+				Module: "module",
+				Go:     "1.20",
+				Direct: RequireStanza{Dependencies: []Dependency{
+					{Name: "example.com/one/blue", Version: semantic.New(1, 0, 1)},
+				}},
+				Indirect:   RequireStanza{Dependencies: make([]Dependency, 0)},
+				Replace:    ReplaceStanza{Replacements: make([]Replacement, 0)},
+				ReplaceSub: ReplaceStanza{Replacements: make([]Replacement, 0)},
+			},
+			exp: &Content{
+				Module: "module",
+				Go:     "1.20",
+				Direct: RequireStanza{Dependencies: []Dependency{
+					{Name: "example.com/one/blue", Version: semantic.New(1, 0, 1)},
+				}},
+				Indirect:   RequireStanza{Dependencies: make([]Dependency, 0)},
+				Replace:    ReplaceStanza{Replacements: make([]Replacement, 0)},
+				ReplaceSub: ReplaceStanza{Replacements: make([]Replacement, 0)},
+			},
+		},
+		{
 			name: "mix",
 			ent: &Content{
 				Module:    "example.com/project/ent",
