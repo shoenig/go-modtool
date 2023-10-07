@@ -3,7 +3,7 @@ package modfile
 import (
 	"slices"
 
-	"github.com/hashicorp/go-set"
+	"github.com/hashicorp/go-set/v2"
 )
 
 // Merge will combine the changes of o onto c, resolving conflicts
@@ -53,12 +53,12 @@ func Merge(ent, oss *Content) *Content {
 	}
 }
 
-func dependencies(oss, ent *set.HashSet[Dependency, string]) *set.HashSet[Dependency, string] {
+func dependencies(oss, ent *set.HashSet[Dependency, string]) set.Collection[Dependency] {
 	// blunt merge with oss overriding ent
-	return ent.Union(oss)
+	return oss.Union(ent)
 }
 
-func replacements(oss, ent *set.HashSet[Replacement, string]) *set.HashSet[Replacement, string] {
+func replacements(oss, ent *set.HashSet[Replacement, string]) set.Collection[Replacement] {
 	// blunt merge with oss overriding ent
-	return ent.Union(oss)
+	return oss.Union(ent)
 }
