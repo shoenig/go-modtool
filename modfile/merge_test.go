@@ -63,7 +63,7 @@ func TestMerge(t *testing.T) {
 			ent: &Content{
 				Module:    "example.com/project/ent",
 				Go:        "1.20",
-				Toolchain: "1.20",
+				Toolchain: ToolchainStanza{Version: "1.20"},
 				Direct: RequireStanza{Dependencies: []Dependency{
 					{Name: "example.com/one/blue", Version: semantic.New(1, 0, 0)},
 					{Name: "example.com/one/green", Version: semantic.New(0, 3, 2)},
@@ -89,8 +89,8 @@ func TestMerge(t *testing.T) {
 			},
 			oss: &Content{
 				Module:    "example.com/project/oss",
-				Go:        "1.21", // upgrade
-				Toolchain: "1.21", // upgrade
+				Go:        "1.21",                           // upgrade
+				Toolchain: ToolchainStanza{Version: "1.21"}, // upgrade
 				Direct: RequireStanza{Dependencies: []Dependency{
 					{Name: "example.com/one/pink", Version: semantic.New(1, 0, 1)}, // introduction
 					{Name: "example.com/one/blue", Version: semantic.New(1, 0, 0)},
@@ -114,7 +114,7 @@ func TestMerge(t *testing.T) {
 			exp: &Content{
 				Module:    "example.com/project/ent",
 				Go:        "1.21",
-				Toolchain: "1.21",
+				Toolchain: ToolchainStanza{Version: "1.21"},
 				Direct: RequireStanza{Dependencies: []Dependency{
 					{Name: "example.com/one/blue", Version: semantic.New(1, 0, 0)},
 					{Name: "example.com/one/green", Version: semantic.New(0, 3, 3)},      // upgrade
