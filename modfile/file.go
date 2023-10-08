@@ -87,10 +87,19 @@ func (ds *RequireStanza) add(d Dependency) {
 	ds.Dependencies = append(ds.Dependencies, d)
 }
 
+type ToolchainStanza struct {
+	Comment string
+	Version string // arbitrary
+}
+
+func (ts ToolchainStanza) empty() bool {
+	return ts.Version == ""
+}
+
 type Content struct {
 	Module     string
 	Go         string
-	Toolchain  string
+	Toolchain  ToolchainStanza
 	Direct     RequireStanza
 	Indirect   RequireStanza
 	Replace    ReplaceStanza
@@ -121,8 +130,11 @@ func (c *Content) Write(w io.Writer) error {
 	write("module", " ", c.Module, "\n", "\n")
 	write("go", " ", c.Go, "\n", "\n")
 
-	if c.Toolchain != "" {
-		write("toolchain", " ", c.Toolchain, "\n", "\n")
+	if !c.Toolchain.empty() {
+		if c.Toolchain.Comment != "" {
+			write("// ", c.Toolchain.Comment, "\n")
+		}
+		write("toolchain", " ", c.Toolchain.Version, "\n", "\n")
 	}
 
 	if !c.Replace.empty() {
@@ -194,7 +206,9 @@ func process(f *modpkg.File) (*Content, error) {
 	c.Go = f.Go.Version
 
 	if f.Toolchain != nil {
-		c.Toolchain = f.Toolchain.Name
+		c.Toolchain = ToolchainStanza{
+			Version: f.Toolchain.Name,
+		}
 	}
 
 	// iterate every require block, combining them into just 2, one each for

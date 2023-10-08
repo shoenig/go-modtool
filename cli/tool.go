@@ -20,6 +20,7 @@ type Tool struct {
 	writeFile         bool   // overwrite file(s) in place
 	replaceComment    string // replacement block
 	submodulesComment string // replacement block for submodules
+	toolchainComment  string // go toolchain
 	modFile           string // the go.mod file
 }
 
@@ -27,7 +28,8 @@ func (t *Tool) flags() []string {
 	flag.BoolVar(&t.writeFile, "w", false, "Write go.mod/go.sum file(s) in place (optional)")
 	flag.StringVar(&t.configFile, "config", "", "Config file (optional)")
 	flag.StringVar(&t.replaceComment, "replace-comment", "", "Comment for replace stanza (optional)")
-	flag.StringVar(&t.submodulesComment, "subs-comment", "", "Comment for submodules replace stanza (optional)")
+	flag.StringVar(&t.submodulesComment, "submodules-comment", "", "Comment for submodules replace stanza (optional)")
+	flag.StringVar(&t.toolchainComment, "toolchain-comment", "", "Comment for go toolchain directive (optional)")
 	flag.Parse()
 	return flag.Args()
 }
@@ -41,6 +43,7 @@ func (t *Tool) applyConfig() int {
 		WriteFile         bool
 		ReplaceComment    string
 		SubmodulesComment string
+		ToolchainComment  string
 	}
 
 	var c config
@@ -49,6 +52,9 @@ func (t *Tool) applyConfig() int {
 		fmt.Fprintln(os.Stderr, "crash:", err)
 		return exitFailure
 	}
+
+	// override default values of args if set in the config file,
+	// i.e. the args take precedence
 
 	if !t.writeFile {
 		t.writeFile = c.WriteFile
@@ -60,6 +66,10 @@ func (t *Tool) applyConfig() int {
 
 	if t.submodulesComment == "" {
 		t.submodulesComment = c.SubmodulesComment
+	}
+
+	if t.toolchainComment == "" {
+		t.toolchainComment = c.ToolchainComment
 	}
 
 	return 0
@@ -106,6 +116,7 @@ func (t *Tool) fmt(args []string) error {
 		return err
 	}
 
+	content.Toolchain.Comment = t.toolchainComment
 	content.Replace.Comment = t.replaceComment
 	content.ReplaceSub.Comment = t.submodulesComment
 	return t.write(content)
