@@ -2,6 +2,8 @@ module github.com/x/example
 
 go 1.20
 
+toolchain go1.19.3
+
 require (
 	github.com/foo/bar v1.0.0
 	github.com/private/blah v0.1.0
