@@ -44,10 +44,10 @@ func TestTool_fmt(t *testing.T) {
 	modFile := setup(t)
 
 	tool := &Tool{
-		writeFile:   true,
-		repsComment: "This is a comment about replacements.",
-		subsComment: "This is a comment about submodules.",
-		modFile:     modFile,
+		writeFile:         true,
+		replaceComment:    "This is a comment about replacements.",
+		submodulesComment: "This is a comment about submodules.",
+		modFile:           modFile,
 	}
 	args := []string{modFile}
 

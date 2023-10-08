@@ -3,6 +3,7 @@ module github.com/shoenig/go-modtool
 go 1.21
 
 require (
+	github.com/BurntSushi/toml v1.3.2
 	github.com/hashicorp/go-set/v2 v2.0.0-alpha.2
 	github.com/shoenig/semantic v1.2.1
 	github.com/shoenig/test v0.6.7

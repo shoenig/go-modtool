@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/BurntSushi/toml"
 	"github.com/shoenig/go-modtool/modfile"
 )
 
@@ -15,22 +16,58 @@ const (
 )
 
 type Tool struct {
-	writeFile   bool   // overwrite file(s) in place
-	repsComment string // replacement block
-	subsComment string // replacement block for submodules
-	modFile     string // the go.mod file
+	configFile        string // optional config file
+	writeFile         bool   // overwrite file(s) in place
+	replaceComment    string // replacement block
+	submodulesComment string // replacement block for submodules
+	modFile           string // the go.mod file
 }
 
 func (t *Tool) flags() []string {
-	flag.BoolVar(&t.writeFile, "w", false, "Write go.mod/go.sum file(s) in place")
-	flag.StringVar(&t.repsComment, "replace-comment", "", "Comment for replace stanza")
-	flag.StringVar(&t.subsComment, "subs-comment", "", "Comment for submodules replace stanza")
+	flag.BoolVar(&t.writeFile, "w", false, "Write go.mod/go.sum file(s) in place (optional)")
+	flag.StringVar(&t.configFile, "config", "", "Config file (optional)")
+	flag.StringVar(&t.replaceComment, "replace-comment", "", "Comment for replace stanza (optional)")
+	flag.StringVar(&t.submodulesComment, "subs-comment", "", "Comment for submodules replace stanza (optional)")
 	flag.Parse()
 	return flag.Args()
 }
 
+func (t *Tool) applyConfig() int {
+	if t.configFile == "" {
+		return 0
+	}
+
+	type config struct {
+		WriteFile         bool
+		ReplaceComment    string
+		SubmodulesComment string
+	}
+
+	var c config
+	_, err := toml.DecodeFile(t.configFile, &c)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "crash:", err)
+		return exitFailure
+	}
+
+	if !t.writeFile {
+		t.writeFile = c.WriteFile
+	}
+
+	if t.replaceComment == "" {
+		t.replaceComment = c.ReplaceComment
+	}
+
+	if t.submodulesComment == "" {
+		t.submodulesComment = c.SubmodulesComment
+	}
+
+	return 0
+}
+
 func (t *Tool) Run() int {
 	args := t.flags() // initialize
+	t.applyConfig()   // read config file if set
 
 	var err error
 	switch {
@@ -69,8 +106,8 @@ func (t *Tool) fmt(args []string) error {
 		return err
 	}
 
-	content.Replace.Comment = t.repsComment
-	content.ReplaceSub.Comment = t.subsComment
+	content.Replace.Comment = t.replaceComment
+	content.ReplaceSub.Comment = t.submodulesComment
 	return t.write(content)
 }
 
@@ -94,8 +131,8 @@ func (t *Tool) merge(args []string) error {
 	}
 
 	content := modfile.Merge(original, next)
-	content.Replace.Comment = t.repsComment
-	content.ReplaceSub.Comment = t.subsComment
+	content.Replace.Comment = t.replaceComment
+	content.ReplaceSub.Comment = t.submodulesComment
 	return t.write(content)
 }
 
