@@ -21,6 +21,7 @@ type Tool struct {
 	replaceComment    string // replacement block
 	submodulesComment string // replacement block for submodules
 	toolchainComment  string // go toolchain
+	excludeComment    string // exclude block
 	modFile           string // the go.mod file
 }
 
@@ -30,6 +31,7 @@ func (t *Tool) flags() []string {
 	flag.StringVar(&t.replaceComment, "replace-comment", "", "Comment for replace stanza (optional)")
 	flag.StringVar(&t.submodulesComment, "submodules-comment", "", "Comment for submodules replace stanza (optional)")
 	flag.StringVar(&t.toolchainComment, "toolchain-comment", "", "Comment for go toolchain directive (optional)")
+	flag.StringVar(&t.excludeComment, "exclude-comment", "", "Comment for exclude directive (optional)")
 	flag.Parse()
 	return flag.Args()
 }
@@ -44,6 +46,7 @@ func (t *Tool) applyConfig() int {
 		ReplaceComment    string
 		SubmodulesComment string
 		ToolchainComment  string
+		ExcludeComment    string
 	}
 
 	var c config
@@ -70,6 +73,10 @@ func (t *Tool) applyConfig() int {
 
 	if t.toolchainComment == "" {
 		t.toolchainComment = c.ToolchainComment
+	}
+
+	if t.excludeComment == "" {
+		t.excludeComment = c.ExcludeComment
 	}
 
 	return 0
@@ -119,6 +126,7 @@ func (t *Tool) fmt(args []string) error {
 	content.Toolchain.Comment = t.toolchainComment
 	content.Replace.Comment = t.replaceComment
 	content.ReplaceSub.Comment = t.submodulesComment
+	content.Exclude.Comment = t.excludeComment
 	return t.write(content)
 }
 
@@ -142,8 +150,10 @@ func (t *Tool) merge(args []string) error {
 	}
 
 	content := modfile.Merge(original, next)
+	content.Toolchain.Comment = t.toolchainComment
 	content.Replace.Comment = t.replaceComment
 	content.ReplaceSub.Comment = t.submodulesComment
+	content.Exclude.Comment = t.excludeComment
 	return t.write(content)
 }
 

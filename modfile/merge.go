@@ -46,8 +46,8 @@ func Merge(ent, oss *Content) *Content {
 		Module:     ent.Module,
 		Go:         oss.Go,
 		Toolchain:  oss.Toolchain,
-		Direct:     RequireStanza{Dependencies: direct},
-		Indirect:   RequireStanza{Dependencies: indirect},
+		Direct:     BasicStanza{Dependencies: direct},
+		Indirect:   BasicStanza{Dependencies: indirect},
 		Replace:    ReplaceStanza{Replacements: replace},
 		ReplaceSub: ReplaceStanza{Replacements: subs},
 	}
