@@ -17,3 +17,8 @@ require (
 
 replace github.com/example/test1/sdk => ./sdk
 
+exclude github.com/broken/aaa v1.1.0
+
+exclude (
+	github.com/broken/bbb v1.0.0
+)

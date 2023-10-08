@@ -74,16 +74,16 @@ func (r Replacement) String() string {
 	return fmt.Sprintf("%s => %s", r.Orig, r.Next)
 }
 
-type RequireStanza struct {
-	Comment      []string
+type BasicStanza struct {
+	Comment      string
 	Dependencies []Dependency
 }
 
-func (ds *RequireStanza) empty() bool {
+func (ds *BasicStanza) empty() bool {
 	return len(ds.Dependencies) == 0
 }
 
-func (ds *RequireStanza) add(d Dependency) {
+func (ds *BasicStanza) add(d Dependency) {
 	ds.Dependencies = append(ds.Dependencies, d)
 }
 
@@ -100,12 +100,12 @@ type Content struct {
 	Module     string
 	Go         string
 	Toolchain  ToolchainStanza
-	Direct     RequireStanza
-	Indirect   RequireStanza
+	Direct     BasicStanza
+	Indirect   BasicStanza
 	Replace    ReplaceStanza
 	ReplaceSub ReplaceStanza // sub modules, e.g. "=> ./api"
+	Exclude    BasicStanza
 
-	// Exclude   []Dependency
 	// Retract   []semantic.Tag
 }
 
@@ -171,6 +171,17 @@ func (c *Content) Write(w io.Writer) error {
 		write("require (", "\n")
 		for _, d := range c.Indirect.Dependencies {
 			write(indent, d.String(), " // indirect", "\n")
+		}
+		write(")", "\n", "\n")
+	}
+
+	if !c.Exclude.empty() {
+		if c.Exclude.Comment != "" {
+			write("// ", c.Exclude.Comment, "\n")
+		}
+		write("exclude (", "\n")
+		for _, d := range c.Exclude.Dependencies {
+			write(indent, d.String(), "\n")
 		}
 		write(")", "\n", "\n")
 	}
@@ -253,8 +264,20 @@ func process(f *modpkg.File) (*Content, error) {
 		}
 	}
 
+	// iterate every exclude block, combining them into one
+	for _, exclude := range f.Exclude {
+		version, ok := semantic.Parse(exclude.Mod.Version)
+		if !ok {
+			return nil, fmt.Errorf("failed to parse exclude version %q", exclude.Mod.Version)
+		}
+		dependency := Dependency{
+			Name:    exclude.Mod.Path,
+			Version: version,
+		}
+		c.Exclude.add(dependency)
+	}
+
 	// todo: retracts
-	// todo: excludes
 
 	return c, nil
 }
