@@ -1,0 +1,10 @@
+WriteFile = false
+
+ReplaceComment = "The e2e replace comment"
+
+SubmodulesComment = "The e2e submodules comment"
+
+ToolchainComment = "The e2e toolchain comment"
+
+ExcludeComment = "The e2e exclude comment"
+

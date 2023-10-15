@@ -16,6 +16,12 @@ copywrite:
 test:
 	go test -race ./...
 
+.PHONY: test-e2e
+test-e2e: clean build
+	@echo "[e2e] checking fmt output ..."
+	output/$(NAME) -config=e2e/fmt/config.toml fmt e2e/fmt/input.mod > /tmp/fmt.mod
+	diff /tmp/fmt.mod e2e/fmt/exp.mod
+
 .PHONY: vet
 vet:
 	go vet ./...
