@@ -8,6 +8,10 @@ build: clean
 clean:
 	rm -rf dist output/$(NAME)
 
+.PHONY: copywrite
+copywrite:
+	copywrite headers --spdx "MPL-2.0"
+
 .PHONY: test
 test:
 	go test -race ./...
