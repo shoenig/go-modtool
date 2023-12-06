@@ -96,6 +96,22 @@ The same CLI arguments from the `fmt` command apply to the `merge` command.
 Note that it is imperative to run `go mod tidy` after doing a merge to ensure only
 the necessary modules remain in the resulting `go.mod` and `go.sum` files.
 
+## Config File
+
+To make CI easier the subcommands above can be described in a TOML config file.
+
+```toml
+ReplaceComment    = "An example replace comment."
+SubmodulesComment = "An example submodules comment."
+WriteFile         = true
+```
+
+Use the `--config` flag to specify a path to the config file.
+
+```shell-session
+go-modtool -config=modtool.toml fmt go.mod
+```
+
 ## Contributing
 
 The `github.com/shoenig/go-modtool` module / cli tool is always improving with new features
