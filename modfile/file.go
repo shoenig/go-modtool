@@ -18,8 +18,9 @@ var (
 )
 
 type Dependency struct {
-	Name    string
-	Version semantic.Tag
+	Replacement bool
+	Name        string
+	Version     semantic.Tag
 }
 
 func (d Dependency) Hash() string {
@@ -27,7 +28,7 @@ func (d Dependency) Hash() string {
 }
 
 func (d Dependency) String() string {
-	if d.Version.Equal(zero) {
+	if d.Version.Equal(zero) && d.Replacement {
 		return d.Name
 	}
 	return fmt.Sprintf("%s %s", d.Name, d.Version)
@@ -248,16 +249,18 @@ func process(f *modpkg.File) (*Content, error) {
 	for _, replacement := range f.Replace {
 		origVersion, _ := semantic.Parse(replacement.Old.Version) // version optional
 		orig := Dependency{
-			Name:    replacement.Old.Path,
-			Version: origVersion,
+			Replacement: true,
+			Name:        replacement.Old.Path,
+			Version:     origVersion,
 		}
 		nextVersion, ok := semantic.Parse(replacement.New.Version)
 		if !ok && !strings.HasPrefix(replacement.New.Path, "./") {
 			return nil, fmt.Errorf("failed to parse replacement version %q", replacement.New.Version)
 		}
 		next := Dependency{
-			Name:    replacement.New.Path,
-			Version: nextVersion,
+			Replacement: true,
+			Name:        replacement.New.Path,
+			Version:     nextVersion,
 		}
 		r := Replacement{Orig: orig, Next: next}
 		if strings.HasPrefix(next.Name, "./") {
