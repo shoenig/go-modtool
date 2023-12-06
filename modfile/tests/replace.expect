@@ -3,17 +3,17 @@ module replacements
 go 1.21.0
 
 replace (
-    example.com/a/b => example.com/a/b v1.1.0
-    example.com/c/d/v2 => other.com/c/d/v2 v2.4.0
+	example.com/a/b => example.com/a/b v1.1.0
+	example.com/c/d/v2 => other.com/c/d/v2 v2.4.0
 )
 
 replace (
-    example.com/api => ./api
+	example.com/api => ./api
 )
 
 require (
-    example.com/a/b v1.0.0
-    example.com/c/d/v2 v2.2.2
-    example.com/api v1.1.1
+	example.com/a/b v1.0.0
+	example.com/c/d/v2 v2.2.2
+	example.com/api v1.1.1
 )
 

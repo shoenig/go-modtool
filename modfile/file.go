@@ -119,7 +119,7 @@ func (c *Content) String() string {
 
 func (c *Content) Write(w io.Writer) error {
 	var err error
-	const indent = "    "
+	const indent = "\t"
 	write := func(parts ...string) {
 		if err == nil {
 			for _, part := range parts {

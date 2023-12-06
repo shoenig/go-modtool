@@ -3,7 +3,7 @@ module github.com/example/project
 go 1.21.0
 
 require (
-    github.com/a/b v1.1.1
-    github.com/c/d v1.0.0
+	github.com/a/b v1.1.1
+	github.com/c/d v1.0.0
 )
 
