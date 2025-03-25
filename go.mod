@@ -1,13 +1,15 @@
 module github.com/shoenig/go-modtool
 
-go 1.21
+go 1.23.0
+
+toolchain go1.24.1
 
 require (
 	github.com/BurntSushi/toml v1.3.2
 	github.com/hashicorp/go-set/v2 v2.1.0
 	github.com/shoenig/semantic v1.2.1
 	github.com/shoenig/test v1.7.0
-	golang.org/x/mod v0.14.0
+	golang.org/x/mod v0.24.0
 )
 
 require (
