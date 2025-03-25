@@ -193,7 +193,7 @@ func (c *Content) Write(w io.Writer) error {
 	return err
 }
 
-func Open(path string) (*Content, error) {
+func Open(path string) (*modpkg.File, error) {
 	b, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -202,7 +202,7 @@ func Open(path string) (*Content, error) {
 	return read(b)
 }
 
-func read(r io.Reader) (*Content, error) {
+func read(r io.Reader) (*modpkg.File, error) {
 	b, err := io.ReadAll(r)
 	if err != nil {
 		return nil, err
@@ -211,10 +211,11 @@ func read(r io.Reader) (*Content, error) {
 	if err != nil {
 		return nil, err
 	}
-	return process(f)
+
+	return f, nil
 }
 
-func process(f *modpkg.File) (*Content, error) {
+func Process(f *modpkg.File) (*Content, error) {
 	c := new(Content)
 
 	c.Module = f.Module.Mod.Path
@@ -244,6 +245,10 @@ func process(f *modpkg.File) (*Content, error) {
 		}
 	}
 
+	isLocal := func(name string) bool {
+		return strings.HasPrefix(name, "./") || strings.HasPrefix(name, "../")
+	}
+
 	// iterate every replace block, combining them into just 2, one for normal
 	// replacements and one for sub modules
 	for _, replacement := range f.Replace {
@@ -254,7 +259,7 @@ func process(f *modpkg.File) (*Content, error) {
 			Version:     origVersion,
 		}
 		nextVersion, ok := semantic.Parse(replacement.New.Version)
-		if !ok && !strings.HasPrefix(replacement.New.Path, "./") {
+		if !ok && !isLocal(replacement.New.Path) {
 			return nil, fmt.Errorf("failed to parse replacement version %q", replacement.New.Version)
 		}
 		next := Dependency{
@@ -263,7 +268,7 @@ func process(f *modpkg.File) (*Content, error) {
 			Version:     nextVersion,
 		}
 		r := Replacement{Orig: orig, Next: next}
-		if strings.HasPrefix(next.Name, "./") {
+		if isLocal(next.Name) {
 			c.ReplaceSub.add(r)
 		} else {
 			c.Replace.add(r)

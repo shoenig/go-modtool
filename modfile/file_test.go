@@ -32,7 +32,9 @@ func TestContent_Write(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			in := filepath.Join("tests", tc.name+".mod")
 			exp := filepath.Join("tests", tc.name+".expect")
-			c, err := Open(in)
+			m, err := Open(in)
+			must.NoError(t, err)
+			c, err := Process(m)
 			must.NoError(t, err)
 
 			var b bytes.Buffer
