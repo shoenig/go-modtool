@@ -19,6 +19,7 @@ var (
 
 type Dependency struct {
 	Replacement bool
+	Tool        bool
 	Name        string
 	Version     semantic.Tag
 }
@@ -28,7 +29,7 @@ func (d Dependency) Hash() string {
 }
 
 func (d Dependency) String() string {
-	if d.Version.Equal(zero) && d.Replacement {
+	if d.Version.Equal(zero) && (d.Replacement || d.Tool) {
 		return d.Name
 	}
 	return fmt.Sprintf("%s %s", d.Name, d.Version)
@@ -109,6 +110,7 @@ type Content struct {
 	Replace    ReplaceStanza
 	ReplaceSub ReplaceStanza // sub modules, e.g. "=> ./api"
 	Exclude    BasicStanza
+	Tool       BasicStanza
 
 	// Retract   []semantic.Tag
 }
@@ -185,6 +187,17 @@ func (c *Content) Write(w io.Writer) error {
 		}
 		write("exclude (", "\n")
 		for _, d := range c.Exclude.Dependencies {
+			write(indent, d.String(), "\n")
+		}
+		write(")", "\n", "\n")
+	}
+
+	if !c.Tool.empty() {
+		if c.Tool.Comment != "" {
+			write("// ", c.Tool.Comment, "\n")
+		}
+		write("tool (", "\n")
+		for _, d := range c.Tool.Dependencies {
 			write(indent, d.String(), "\n")
 		}
 		write(")", "\n", "\n")
@@ -286,6 +299,15 @@ func Process(f *modpkg.File) (*Content, error) {
 			Version: version,
 		}
 		c.Exclude.add(dependency)
+	}
+
+	// iterate every exclude block, combining them into one
+	for _, tool := range f.Tool {
+		dependency := Dependency{
+			Tool: true,
+			Name: tool.Path,
+		}
+		c.Tool.add(dependency)
 	}
 
 	// todo: retracts
