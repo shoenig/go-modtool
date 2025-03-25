@@ -8,6 +8,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/BurntSushi/toml"
 	"github.com/shoenig/go-modtool/modfile"
@@ -19,17 +20,19 @@ const (
 )
 
 type Tool struct {
-	configFile        string // optional config file
-	writeFile         bool   // overwrite file(s) in place
-	replaceComment    string // replacement block
-	submodulesComment string // replacement block for submodules
-	toolchainComment  string // go toolchain
-	excludeComment    string // exclude block
-	modFile           string // the go.mod file
+	configFile           string // optional config file
+	writeFile            bool   // overwrite file(s) in place
+	converPathSeparators bool   // convert path separators to UNIX format
+	replaceComment       string // replacement block
+	submodulesComment    string // replacement block for submodules
+	toolchainComment     string // go toolchain
+	excludeComment       string // exclude block
+	modFile              string // the go.mod file
 }
 
 func (t *Tool) flags() []string {
 	flag.BoolVar(&t.writeFile, "w", false, "Write go.mod/go.sum file(s) in place (optional)")
+	flag.BoolVar(&t.converPathSeparators, "p", false, "Convert path separators to UNIX format (optional)")
 	flag.StringVar(&t.configFile, "config", "", "Config file (optional)")
 	flag.StringVar(&t.replaceComment, "replace-comment", "", "Comment for replace stanza (optional)")
 	flag.StringVar(&t.submodulesComment, "submodules-comment", "", "Comment for submodules replace stanza (optional)")
@@ -45,11 +48,12 @@ func (t *Tool) applyConfig() int {
 	}
 
 	type config struct {
-		WriteFile         bool
-		ReplaceComment    string
-		SubmodulesComment string
-		ToolchainComment  string
-		ExcludeComment    string
+		WriteFile            bool
+		ConverPathSeparators bool
+		ReplaceComment       string
+		SubmodulesComment    string
+		ToolchainComment     string
+		ExcludeComment       string
 	}
 
 	var c config
@@ -64,6 +68,10 @@ func (t *Tool) applyConfig() int {
 
 	if !t.writeFile {
 		t.writeFile = c.WriteFile
+	}
+
+	if !t.converPathSeparators {
+		t.converPathSeparators = c.ConverPathSeparators
 	}
 
 	if t.replaceComment == "" {
@@ -111,6 +119,27 @@ func (t *Tool) Run() int {
 	return exitSuccess
 }
 
+func (t *Tool) openMod(file string) (*modfile.Content, error) {
+	modFile, err := modfile.Open(file)
+	if err != nil {
+		return nil, err
+	}
+
+	if t.converPathSeparators {
+		for _, replace := range modFile.Replace {
+			replace.Old.Path = strings.ReplaceAll(replace.Old.Path, "\\", "/")
+			replace.New.Path = strings.ReplaceAll(replace.New.Path, "\\", "/")
+		}
+	}
+
+	content, err := modfile.Process(modFile)
+	if err != nil {
+		return nil, err
+	}
+
+	return content, nil
+}
+
 func (t *Tool) fmt(args []string) error {
 	switch len(args) {
 	case 0:
@@ -121,7 +150,8 @@ func (t *Tool) fmt(args []string) error {
 	}
 
 	t.modFile = args[0]
-	content, err := modfile.Open(t.modFile)
+
+	content, err := t.openMod(t.modFile)
 	if err != nil {
 		return err
 	}
@@ -142,12 +172,12 @@ func (t *Tool) merge(args []string) error {
 		return errors.New("must specify just old and new go.mod files to merge")
 	}
 
-	original, err := modfile.Open(args[0])
+	original, err := t.openMod(args[0])
 	if err != nil {
 		return err
 	}
 
-	next, err := modfile.Open(args[1])
+	next, err := t.openMod(args[1])
 	if err != nil {
 		return err
 	}
