@@ -10,7 +10,7 @@ github.com/shoenig/regexplus v0.3.0 h1:+eJZ5P4y1IY4+NgkIIvIqqdG/uYRBuSg4vWUjEppL
 github.com/shoenig/regexplus v0.3.0/go.mod h1:AT46KcYMK7iD/drPHdFtmB42TetxBe5S/O3vMGPa5cw=
 github.com/shoenig/semantic v1.2.1 h1:iDF/IitQLjl6qbJ2Geu1he5W/XciKhpz4IwXVyERZbY=
 github.com/shoenig/semantic v1.2.1/go.mod h1:gvoxf6lUq6J79VZuCMv9Ef3JfpRjnWzlc2rLEfQT+q0=
-github.com/shoenig/test v1.11.0 h1:NoPa5GIoBwuqzIviCrnUJa+t5Xb4xi5Z+zODJnIDsEQ=
-github.com/shoenig/test v1.11.0/go.mod h1:UxJ6u/x2v/TNs/LoLxBNJRV9DiwBBKYxXSyczsBHFoI=
+github.com/shoenig/test v1.12.1 h1:mLHfnMv7gmhhP44WrvT+nKSxKkPDiNkIuHGdIGI9RLU=
+github.com/shoenig/test v1.12.1/go.mod h1:UxJ6u/x2v/TNs/LoLxBNJRV9DiwBBKYxXSyczsBHFoI=
 golang.org/x/mod v0.24.0 h1:ZfthKaKaT4NrhGVZHO1/WDTwGES4De8KtWO0SIbNJMU=
 golang.org/x/mod v0.24.0/go.mod h1:IXM97Txy2VM4PJ3gI61r1YEk/gAj6zAHN3AdZt6S9Ww=
