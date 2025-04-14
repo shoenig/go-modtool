@@ -1,11 +1,9 @@
-github.com/BurntSushi/toml v1.3.2 h1:o7IhLm0Msx3BaB+n3Ag7L8EVlByGnpq14C4YWiu/gL8=
-github.com/BurntSushi/toml v1.3.2/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
 github.com/BurntSushi/toml v1.5.0 h1:W5quZX/G/csjUnuI8SUYlsHs9M38FC7znL0lIO+DvMg=
 github.com/BurntSushi/toml v1.5.0/go.mod h1:ukJfTF/6rtPPRCnwkur4qwRxa8vTRFBF0uk2lLoLwho=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
-github.com/hashicorp/go-set/v2 v2.1.0 h1:iERPCQWks+I+4bTgy0CT2myZsCqNgBg79ZHqwniohXo=
-github.com/hashicorp/go-set/v2 v2.1.0/go.mod h1:6q4nh8UCVZODn2tJ5RbJi8+ki7pjZBsAEYGt6yaGeTo=
+github.com/hashicorp/go-set/v3 v3.0.0 h1:CaJBQvQCOWoftrBcDt7Nwgo0kdpmrKxar/x2o6pV9JA=
+github.com/hashicorp/go-set/v3 v3.0.0/go.mod h1:IEghM2MpE5IaNvL+D7X480dfNtxjRXZ6VMpK3C8s2ok=
 github.com/shoenig/ignore v0.4.0 h1:qPOWs0slbPMtenC0H3cKvu5Kn3hQFTE3yK6YJvyNDlA=
 github.com/shoenig/ignore v0.4.0/go.mod h1:VF91FoiYAwXq4KinOq6zP5xfFw/Ib6MfftaGKYTpmwo=
 github.com/shoenig/regexplus v0.3.0 h1:+eJZ5P4y1IY4+NgkIIvIqqdG/uYRBuSg4vWUjEppLcY=

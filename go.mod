@@ -4,7 +4,7 @@ go 1.24
 
 require (
 	github.com/BurntSushi/toml v1.5.0
-	github.com/hashicorp/go-set/v2 v2.1.0
+	github.com/hashicorp/go-set/v3 v3.0.0
 	github.com/shoenig/semantic v1.2.1
 	github.com/shoenig/test v1.11.0
 	golang.org/x/mod v0.24.0

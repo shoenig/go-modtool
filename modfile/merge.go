@@ -6,7 +6,7 @@ package modfile
 import (
 	"slices"
 
-	"github.com/hashicorp/go-set/v2"
+	"github.com/hashicorp/go-set/v3"
 )
 
 // Merge will combine the changes of o onto c, resolving conflicts
