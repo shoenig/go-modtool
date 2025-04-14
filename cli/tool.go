@@ -20,19 +20,19 @@ const (
 )
 
 type Tool struct {
-	configFile           string // optional config file
-	writeFile            bool   // overwrite file(s) in place
-	converPathSeparators bool   // convert path separators to UNIX format
-	replaceComment       string // replacement block
-	submodulesComment    string // replacement block for submodules
-	toolchainComment     string // go toolchain
-	excludeComment       string // exclude block
-	modFile              string // the go.mod file
+	configFile            string // optional config file
+	writeFile             bool   // overwrite file(s) in place
+	convertPathSeparators bool   // convert path separators to UNIX format
+	replaceComment        string // replacement block
+	submodulesComment     string // replacement block for submodules
+	toolchainComment      string // go toolchain
+	excludeComment        string // exclude block
+	modFile               string // the go.mod file
 }
 
 func (t *Tool) flags() []string {
 	flag.BoolVar(&t.writeFile, "w", false, "Write go.mod/go.sum file(s) in place (optional)")
-	flag.BoolVar(&t.converPathSeparators, "p", false, "Convert path separators to UNIX format (optional)")
+	flag.BoolVar(&t.convertPathSeparators, "p", false, "Convert path separators to UNIX format (optional)")
 	flag.StringVar(&t.configFile, "config", "", "Config file (optional)")
 	flag.StringVar(&t.replaceComment, "replace-comment", "", "Comment for replace stanza (optional)")
 	flag.StringVar(&t.submodulesComment, "submodules-comment", "", "Comment for submodules replace stanza (optional)")
@@ -70,8 +70,8 @@ func (t *Tool) applyConfig() int {
 		t.writeFile = c.WriteFile
 	}
 
-	if !t.converPathSeparators {
-		t.converPathSeparators = c.ConverPathSeparators
+	if !t.convertPathSeparators {
+		t.convertPathSeparators = c.ConverPathSeparators
 	}
 
 	if t.replaceComment == "" {
@@ -125,7 +125,7 @@ func (t *Tool) openMod(file string) (*modfile.Content, error) {
 		return nil, err
 	}
 
-	if t.converPathSeparators {
+	if t.convertPathSeparators {
 		for _, replace := range modFile.Replace {
 			replace.Old.Path = strings.ReplaceAll(replace.Old.Path, "\\", "/")
 			replace.New.Path = strings.ReplaceAll(replace.New.Path, "\\", "/")
