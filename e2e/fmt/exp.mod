@@ -36,4 +36,3 @@ require (
 exclude (
 	github.com/shoenig/test v0.5.0
 )
-

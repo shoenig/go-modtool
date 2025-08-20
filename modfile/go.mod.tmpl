@@ -1,0 +1,71 @@
+module {{ .Module }}
+
+go {{ .Go }}
+
+{{- if .Toolchain.Version }}
+
+{{ if .Toolchain.Comment }}// {{ .Toolchain.Comment }}{{ end }}
+toolchain {{ .Toolchain.Version }}
+{{- end }}
+
+{{- if .Replace.Replacements }}
+{{ if .Replace.Comment }}
+// {{ .Replace.Comment }}
+{{- end }}
+replace (
+{{- range .Replace.Replacements }}
+{{ printf "\t" }}{{ . }}
+{{- end }}
+)
+{{- end }}
+
+{{- if .ReplaceSub.Replacements }}
+{{ if .ReplaceSub.Comment }}
+// {{ .ReplaceSub.Comment }}
+{{- end }}
+replace (
+{{- range .ReplaceSub.Replacements }}
+{{ printf "\t" }}{{ . }}
+{{- end }}
+)
+{{- end }}
+
+{{- if .Direct.Dependencies }}
+
+require (
+{{- range .Direct.Dependencies }}
+{{ printf "\t" }}{{ . }}
+{{- end }}
+)
+{{- end }}
+
+{{- if .Indirect.Dependencies }}
+
+require (
+{{- range .Indirect.Dependencies }}
+{{ printf "\t" }}{{ . }} // indirect
+{{- end }}
+)
+{{- end }}
+
+{{- if .Exclude.Dependencies }}
+{{ if .Exclude.Comment }}
+// {{ .Exclude.Comment }}
+{{- end }}
+exclude (
+{{- range .Exclude.Dependencies }}
+{{ printf "\t" }}{{ . }}
+{{- end }}
+)
+{{- end }}
+
+{{- if .Tool.Dependencies }}
+{{ if .Tool.Comment }}
+// {{ .Tool.Comment }}
+{{- end }}
+tool (
+{{- range .Tool.Dependencies }}
+{{ printf "\t" }}{{ . }}
+{{- end }}
+)
+{{- end }}
