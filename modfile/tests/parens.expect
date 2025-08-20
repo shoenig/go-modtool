@@ -11,4 +11,3 @@ require (
 	example.com/b/a/v2 v2.0.0 // indirect
 	example.com/d/c v1.0.1 // indirect
 )
-

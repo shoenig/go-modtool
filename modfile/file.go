@@ -4,10 +4,12 @@
 package modfile
 
 import (
+	_ "embed"
 	"fmt"
 	"io"
 	"os"
 	"strings"
+	"text/template"
 
 	"github.com/shoenig/semantic"
 	modpkg "golang.org/x/mod/modfile"
@@ -15,6 +17,11 @@ import (
 
 var (
 	zero = semantic.New(0, 0, 0)
+
+	//go:embed go.mod.tmpl
+	goModTemplateBody string
+
+	goModTemplate = template.Must(template.New("go.mod.tmpl").Parse(goModTemplateBody))
 )
 
 type Dependency struct {
@@ -120,90 +127,7 @@ func (c *Content) String() string {
 }
 
 func (c *Content) Write(w io.Writer) error {
-	var err error
-	const indent = "\t"
-	write := func(parts ...string) {
-		if err == nil {
-			for _, part := range parts {
-				_, err = io.WriteString(w, part)
-				if err != nil {
-					return
-				}
-			}
-		}
-	}
-
-	write("module", " ", c.Module, "\n", "\n")
-	write("go", " ", c.Go, "\n", "\n")
-
-	if !c.Toolchain.empty() {
-		if c.Toolchain.Comment != "" {
-			write("// ", c.Toolchain.Comment, "\n")
-		}
-		write("toolchain", " ", c.Toolchain.Version, "\n", "\n")
-	}
-
-	if !c.Replace.empty() {
-		if c.Replace.Comment != "" {
-			write("// ", c.Replace.Comment, "\n")
-		}
-		write("replace (", "\n")
-		for _, d := range c.Replace.Replacements {
-			write(indent, d.String(), "\n")
-		}
-		write(")", "\n", "\n")
-	}
-
-	if !c.ReplaceSub.empty() {
-		if c.ReplaceSub.Comment != "" {
-			write("// ", c.ReplaceSub.Comment, "\n")
-		}
-		write("replace (", "\n")
-		for _, d := range c.ReplaceSub.Replacements {
-			write(indent, d.String(), "\n")
-		}
-		write(")", "\n", "\n")
-	}
-
-	if !c.Direct.empty() {
-		write("require (", "\n")
-		for _, d := range c.Direct.Dependencies {
-			write(indent, d.String(), "\n")
-		}
-		write(")", "\n", "\n")
-	}
-
-	if !c.Indirect.empty() {
-		write("require (", "\n")
-		for _, d := range c.Indirect.Dependencies {
-			write(indent, d.String(), " // indirect", "\n")
-		}
-		write(")", "\n", "\n")
-	}
-
-	if !c.Exclude.empty() {
-		if c.Exclude.Comment != "" {
-			write("// ", c.Exclude.Comment, "\n")
-		}
-		write("exclude (", "\n")
-		for _, d := range c.Exclude.Dependencies {
-			write(indent, d.String(), "\n")
-		}
-		write(")", "\n", "\n")
-	}
-
-	if !c.Tool.empty() {
-		if c.Tool.Comment != "" {
-			write("// ", c.Tool.Comment, "\n")
-		}
-		write("tool (", "\n")
-		for _, d := range c.Tool.Dependencies {
-			write(indent, d.String(), "\n")
-		}
-		write(")", "\n", "\n")
-	}
-
-	return err
+	return goModTemplate.Execute(w, c)
 }
 
 func Open(path string) (*modpkg.File, error) {
