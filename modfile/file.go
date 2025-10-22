@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"slices"
 	"strings"
 	"text/template"
 
@@ -69,6 +70,12 @@ func (rs *ReplaceStanza) empty() bool {
 	return len(rs.Replacements) == 0
 }
 
+func (rs *ReplaceStanza) sort() {
+	slices.SortFunc(rs.Replacements, func(a, b Replacement) int {
+		return a.Cmp(b)
+	})
+}
+
 type Replacement struct {
 	Orig Dependency
 	Next Dependency
@@ -99,6 +106,12 @@ func (ds *BasicStanza) add(d Dependency) {
 	ds.Dependencies = append(ds.Dependencies, d)
 }
 
+func (ds *BasicStanza) sort() {
+	slices.SortFunc(ds.Dependencies, func(a, b Dependency) int {
+		return a.Cmp(b)
+	})
+}
+
 type ToolchainStanza struct {
 	Comment string
 	Version string // arbitrary
@@ -120,6 +133,15 @@ type Content struct {
 	Tool       BasicStanza
 
 	// Retract   []semantic.Tag
+}
+
+func (c *Content) sort() {
+	c.Direct.sort()
+	c.Indirect.sort()
+	c.Replace.sort()
+	c.ReplaceSub.sort()
+	c.Exclude.sort()
+	c.Tool.sort()
 }
 
 func (c *Content) String() string {
@@ -233,6 +255,8 @@ func Process(f *modpkg.File) (*Content, error) {
 		}
 		c.Tool.add(dependency)
 	}
+
+	c.sort()
 
 	// todo: retracts
 

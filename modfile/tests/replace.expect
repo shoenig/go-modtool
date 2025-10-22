@@ -13,6 +13,6 @@ replace (
 
 require (
 	example.com/a/b v1.0.0
-	example.com/c/d/v2 v2.2.2
 	example.com/api v1.1.1
+	example.com/c/d/v2 v2.2.2
 )

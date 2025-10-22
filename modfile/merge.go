@@ -4,8 +4,6 @@
 package modfile
 
 import (
-	"slices"
-
 	"github.com/hashicorp/go-set/v3"
 )
 
@@ -30,22 +28,12 @@ func Merge(ent, oss *Content) *Content {
 	subsOSS := set.HashSetFrom(oss.ReplaceSub.Replacements)
 	subsENT := set.HashSetFrom(ent.ReplaceSub.Replacements)
 
-	cmpDependencies := func(a, b Dependency) int { return a.Cmp(b) }
-	cmpReplacements := func(a, b Replacement) int { return a.Cmp(b) }
-
 	direct := dependencies(directOSS, directENT).Slice()
-	slices.SortFunc(direct, cmpDependencies)
-
 	indirect := dependencies(indirectOSS, indirectENT).Slice()
-	slices.SortFunc(indirect, cmpDependencies)
-
 	replace := replacements(replaceOSS, replaceENT).Slice()
-	slices.SortFunc(replace, cmpReplacements)
-
 	subs := replacements(subsOSS, subsENT).Slice()
-	slices.SortFunc(subs, cmpReplacements)
 
-	return &Content{
+	c := &Content{
 		Module:     ent.Module,
 		Go:         oss.Go,
 		Toolchain:  oss.Toolchain,
@@ -54,6 +42,10 @@ func Merge(ent, oss *Content) *Content {
 		Replace:    ReplaceStanza{Replacements: replace},
 		ReplaceSub: ReplaceStanza{Replacements: subs},
 	}
+
+	c.sort()
+
+	return c
 }
 
 func dependencies(oss, ent *set.HashSet[Dependency, string]) set.Collection[Dependency] {
