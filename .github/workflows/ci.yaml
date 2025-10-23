@@ -2,7 +2,7 @@ name: Run CI Tests
 on: [push]
 jobs:
   run-copywrite:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-copywrite@v1.1.2
@@ -10,7 +10,7 @@ jobs:
         run: |
           copywrite headers --plan
   run-lint:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-golang@v1
@@ -25,8 +25,8 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-22.04
-          - macos-13
+          - ubuntu-24.04
+          - macos-26
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v4
