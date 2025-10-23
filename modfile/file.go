@@ -66,10 +66,6 @@ func (rs *ReplaceStanza) add(r Replacement) {
 	rs.Replacements = append(rs.Replacements, r)
 }
 
-func (rs *ReplaceStanza) empty() bool {
-	return len(rs.Replacements) == 0
-}
-
 func (rs *ReplaceStanza) sort() {
 	slices.SortFunc(rs.Replacements, func(a, b Replacement) int {
 		return a.Cmp(b)
@@ -98,10 +94,6 @@ type BasicStanza struct {
 	Dependencies []Dependency
 }
 
-func (ds *BasicStanza) empty() bool {
-	return len(ds.Dependencies) == 0
-}
-
 func (ds *BasicStanza) add(d Dependency) {
 	ds.Dependencies = append(ds.Dependencies, d)
 }
@@ -115,10 +107,6 @@ func (ds *BasicStanza) sort() {
 type ToolchainStanza struct {
 	Comment string
 	Version string // arbitrary
-}
-
-func (ts ToolchainStanza) empty() bool {
-	return ts.Version == ""
 }
 
 type Content struct {
