@@ -30,6 +30,17 @@ replace (
 )
 {{- end }}
 
+{{- if .Tool.Dependencies }}
+{{ if .Tool.Comment }}
+// {{ .Tool.Comment }}
+{{- end }}
+tool (
+{{- range .Tool.Dependencies }}
+{{ printf "\t" }}{{ . }}
+{{- end }}
+)
+{{- end }}
+
 {{- if .Direct.Dependencies }}
 
 require (
@@ -54,17 +65,6 @@ require (
 {{- end }}
 exclude (
 {{- range .Exclude.Dependencies }}
-{{ printf "\t" }}{{ . }}
-{{- end }}
-)
-{{- end }}
-
-{{- if .Tool.Dependencies }}
-{{ if .Tool.Comment }}
-// {{ .Tool.Comment }}
-{{- end }}
-tool (
-{{- range .Tool.Dependencies }}
 {{ printf "\t" }}{{ . }}
 {{- end }}
 )

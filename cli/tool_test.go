@@ -14,14 +14,14 @@ import (
 
 // setup copies the input source to a temp file we can modify
 // in the test
-func setup(t *testing.T) string {
+func setup(t *testing.T, filename string) string {
 	// copy the input and return that filepath
 	dir := t.TempDir()
 	f := filepath.Join(dir, "go.mod")
 	file, err := os.OpenFile(f, os.O_CREATE|os.O_WRONLY, 0644)
 	must.NoError(t, err)
 
-	orig, err := os.Open("tests/a.mod")
+	orig, err := os.Open(filename)
 	must.NoError(t, err)
 
 	_, err = io.Copy(file, orig)
@@ -43,8 +43,8 @@ func compare(t *testing.T, exp, actual string) {
 	must.Eq(t, expContent, actualContent)
 }
 
-func TestTool_fmt(t *testing.T) {
-	modFile := setup(t)
+func TestTool_fmt_everything(t *testing.T) {
+	modFile := setup(t, "tests/everything.mod")
 
 	tool := &Tool{
 		writeFile:         true,
@@ -57,5 +57,19 @@ func TestTool_fmt(t *testing.T) {
 	err := tool.fmt(args)
 	must.NoError(t, err)
 
-	compare(t, "tests/a.expect", modFile)
+	compare(t, "tests/everything.expect", modFile)
+}
+
+func TestTool_fmt_minimal(t *testing.T) {
+	modFile := setup(t, "tests/minimal.mod")
+
+	tool := &Tool{
+		writeFile: true,
+		modFile:   modFile,
+	}
+
+	err := tool.fmt([]string{modFile})
+	must.NoError(t, err)
+
+	compare(t, "tests/minimal.expect", modFile)
 }
