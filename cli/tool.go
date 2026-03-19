@@ -48,12 +48,12 @@ func (t *Tool) applyConfig() int {
 	}
 
 	type config struct {
-		WriteFile            bool
-		ConverPathSeparators bool
-		ReplaceComment       string
-		SubmodulesComment    string
-		ToolchainComment     string
-		ExcludeComment       string
+		WriteFile            bool   `toml:"WriteFile"`
+		ConverPathSeparators bool   `toml:"ConverPathSeparators"` // TODO: fix typo
+		ReplaceComment       string `toml:"ReplaceComment"`
+		SubmodulesComment    string `toml:"SubmodulesComment"`
+		ToolchainComment     string `toml:"ToolchainComment"`
+		ExcludeComment       string `toml:"ExcludeComment"`
 	}
 
 	var c config
