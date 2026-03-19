@@ -12,6 +12,11 @@ replace (
 	github.com/shoenig/example/api => ./api
 )
 
+tool (
+	example.com/helper/cmd@v0.3.0
+	github.com/some/tool@v1.0.0
+)
+
 require (
 	example.com/a/b v1.0.0
 	example.com/c/d v1.1.0

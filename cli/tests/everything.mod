@@ -19,6 +19,12 @@ replace example.com/c/d => example.com/x/y v0.4.0
 
 require github.com/shoenig/example/api v1.1.1
 
+tool example.com/helper/cmd@v0.3.0
+
 replace (
 	github.com/shoenig/example/api => ./api
+)
+
+tool (
+	github.com/some/tool@v1.0.0
 )
