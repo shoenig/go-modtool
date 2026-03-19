@@ -50,3 +50,4 @@ init:
 [group('release')]
 release:
     envy exec gh-release goreleaser release --clean
+    rm -rf dist
