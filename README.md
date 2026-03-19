@@ -26,6 +26,8 @@ The strongly opinionated format of a `go.mod` file is described below.
 
 - A `replace` stanza appears next (if necessary) for local submodules.
 
+- A `tool` stanza appears next (if necessary) for tool declarations.
+
 - A `require` stanza appears next (if necessary) for direct dependencies.
 
 - A `require` stanza appears next (if necessary) for indirect dependencies.
@@ -68,9 +70,15 @@ go-modtool -w fmt go.mod
 
 The following flags enable specifying comments in the resulting `go.mod` file.
 
+- `--tool-comment` - Insert a comment before the `tool` stanza for installable tools.
+
 - `--replace-comment` - Insert a comment before the `replace` stanza for third party modules.
 
 - `--subs-comment` - Insert a comment before the `replace` stanza for submodules.
+
+- `--toolchain-comment` - Insert a comment before the `toolchain` directive.
+
+- `--exclude-comment` - Insert a comment before the `exclude` stanza for excluded modules.
 
 #### merge
 
@@ -85,13 +93,10 @@ resolve differences caused by module changes in nearby lines.
 go-modtool merge /ent/go.mod /oss/go.mod
 ```
 
-The same CLI arguments from the `fmt` command apply to the `merge` command.
+The same CLI arguments from the `fmt` command apply to the `merge` command. The `merge` command
+also supports:
 
 - `-w` - Write the output to the first `go.mod` file in the input.
-
-- `--replace-comment` - Insert a comment before the `replace` stanza for third party modules.
-
-- `--subs-comment` - Insert a comment before the `replace` stanza for submodules.
 
 Note that it is imperative to run `go mod tidy` after doing a merge to ensure only
 the necessary modules remain in the resulting `go.mod` and `go.sum` files.
@@ -101,8 +106,11 @@ the necessary modules remain in the resulting `go.mod` and `go.sum` files.
 To make CI easier the subcommands above can be described in a TOML config file.
 
 ```toml
+ToolComment       = "An example tool comment."
 ReplaceComment    = "An example replace comment."
 SubmodulesComment = "An example submodules comment."
+ToolchainComment  = "An example toolchain comment."
+ExcludeComment    = "An example exclude comment."
 WriteFile         = true
 ```
 
