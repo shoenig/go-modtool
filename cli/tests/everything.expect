@@ -12,6 +12,7 @@ replace (
 	github.com/shoenig/example/api => ./api
 )
 
+// This is a comment about tools.
 tool (
 	example.com/helper/cmd@v0.3.0
 	github.com/some/tool@v1.0.0

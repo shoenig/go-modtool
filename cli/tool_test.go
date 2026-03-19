@@ -50,6 +50,7 @@ func TestTool_fmt_everything(t *testing.T) {
 		writeFile:         true,
 		replaceComment:    "This is a comment about replacements.",
 		submodulesComment: "This is a comment about submodules.",
+		toolComment:       "This is a comment about tools.",
 		modFile:           modFile,
 	}
 	args := []string{modFile}

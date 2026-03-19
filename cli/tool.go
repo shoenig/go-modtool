@@ -23,6 +23,7 @@ type Tool struct {
 	configFile            string // optional config file
 	writeFile             bool   // overwrite file(s) in place
 	convertPathSeparators bool   // convert path separators to UNIX format
+	toolComment           string // tool block
 	replaceComment        string // replacement block
 	submodulesComment     string // replacement block for submodules
 	toolchainComment      string // go toolchain
@@ -34,6 +35,7 @@ func (t *Tool) flags() []string {
 	flag.BoolVar(&t.writeFile, "w", false, "Write go.mod/go.sum file(s) in place (optional)")
 	flag.BoolVar(&t.convertPathSeparators, "p", false, "Convert path separators to UNIX format (optional)")
 	flag.StringVar(&t.configFile, "config", "", "Config file (optional)")
+	flag.StringVar(&t.toolComment, "tool-comment", "", "Comment for tool stanza (optional)")
 	flag.StringVar(&t.replaceComment, "replace-comment", "", "Comment for replace stanza (optional)")
 	flag.StringVar(&t.submodulesComment, "submodules-comment", "", "Comment for submodules replace stanza (optional)")
 	flag.StringVar(&t.toolchainComment, "toolchain-comment", "", "Comment for go toolchain directive (optional)")
@@ -50,6 +52,7 @@ func (t *Tool) applyConfig() int {
 	type config struct {
 		WriteFile            bool   `toml:"WriteFile"`
 		ConverPathSeparators bool   `toml:"ConverPathSeparators"` // TODO: fix typo
+		ToolComment          string `toml:"ToolComment"`
 		ReplaceComment       string `toml:"ReplaceComment"`
 		SubmodulesComment    string `toml:"SubmodulesComment"`
 		ToolchainComment     string `toml:"ToolchainComment"`
@@ -63,8 +66,7 @@ func (t *Tool) applyConfig() int {
 		return exitFailure
 	}
 
-	// override default values of args if set in the config file,
-	// i.e. the args take precedence
+	// override the config file values with cli argument values, which have a higher precedence
 
 	if !t.writeFile {
 		t.writeFile = c.WriteFile
@@ -72,6 +74,10 @@ func (t *Tool) applyConfig() int {
 
 	if !t.convertPathSeparators {
 		t.convertPathSeparators = c.ConverPathSeparators
+	}
+
+	if t.toolComment == "" {
+		t.toolComment = c.ToolComment
 	}
 
 	if t.replaceComment == "" {
@@ -156,6 +162,7 @@ func (t *Tool) fmt(args []string) error {
 		return err
 	}
 
+	content.Tool.Comment = t.toolComment
 	content.Toolchain.Comment = t.toolchainComment
 	content.Replace.Comment = t.replaceComment
 	content.ReplaceSub.Comment = t.submodulesComment
@@ -183,6 +190,7 @@ func (t *Tool) merge(args []string) error {
 	}
 
 	content := modfile.Merge(original, next)
+	content.Tool.Comment = t.toolComment
 	content.Toolchain.Comment = t.toolchainComment
 	content.Replace.Comment = t.replaceComment
 	content.ReplaceSub.Comment = t.submodulesComment
