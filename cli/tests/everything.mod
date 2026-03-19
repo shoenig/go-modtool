@@ -19,6 +19,7 @@ replace example.com/c/d => example.com/x/y v0.4.0
 
 require github.com/shoenig/example/api v1.1.1
 
+// some more comment
 tool example.com/helper/cmd@v0.3.0
 
 replace (

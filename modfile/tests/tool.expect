@@ -1,0 +1,8 @@
+module github.com/example/project
+
+go 1.26.1
+
+tool (
+	github.com/aaa/command@v0.1.0
+	github.com/bbb/example@v1.2.0
+)
