@@ -1,22 +1,14 @@
-// Copyright (c) Seth Hoenig
-// SPDX-License-Identifier: MPL-2.0
-
-package cli
+package commands
 
 import (
 	"errors"
-	"flag"
 	"fmt"
 	"os"
 	"strings"
 
+	"cattlecloud.net/go/babycli"
 	"github.com/BurntSushi/toml"
 	"github.com/shoenig/go-modtool/modfile"
-)
-
-const (
-	exitSuccess = 0
-	exitFailure = 1
 )
 
 type Tool struct {
@@ -28,25 +20,27 @@ type Tool struct {
 	submodulesComment     string // replacement block for submodules
 	toolchainComment      string // go toolchain
 	excludeComment        string // exclude block
-	modFile               string // the go.mod file
+	arguments             []string
+	outFile               string
 }
 
-func (t *Tool) flags() []string {
-	flag.BoolVar(&t.writeFile, "w", false, "Write go.mod/go.sum file(s) in place (optional)")
-	flag.BoolVar(&t.convertPathSeparators, "p", false, "Convert path separators to UNIX format (optional)")
-	flag.StringVar(&t.configFile, "config", "", "Config file (optional)")
-	flag.StringVar(&t.toolComment, "tool-comment", "", "Comment for tool stanza (optional)")
-	flag.StringVar(&t.replaceComment, "replace-comment", "", "Comment for replace stanza (optional)")
-	flag.StringVar(&t.submodulesComment, "submodules-comment", "", "Comment for submodules replace stanza (optional)")
-	flag.StringVar(&t.toolchainComment, "toolchain-comment", "", "Comment for go toolchain directive (optional)")
-	flag.StringVar(&t.excludeComment, "exclude-comment", "", "Comment for exclude directive (optional)")
-	flag.Parse()
-	return flag.Args()
+func NewTool(c *babycli.Component) *Tool {
+	return &Tool{
+		configFile:            c.GetString("config"),
+		writeFile:             c.GetBool("write-in-place"),
+		convertPathSeparators: c.GetBool("unix-paths"),
+		toolComment:           c.GetString("tool-comment"),
+		replaceComment:        c.GetString("replace-comment"),
+		submodulesComment:     c.GetString("submodules-comment"),
+		toolchainComment:      c.GetString("toolchain-comment"),
+		excludeComment:        c.GetString("exclude-comment"),
+		arguments:             c.Arguments(),
+	}
 }
 
-func (t *Tool) applyConfig() int {
+func (t *Tool) applyConfig() error {
 	if t.configFile == "" {
-		return 0
+		return nil
 	}
 
 	type config struct {
@@ -60,10 +54,8 @@ func (t *Tool) applyConfig() int {
 	}
 
 	var c config
-	_, err := toml.DecodeFile(t.configFile, &c)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "crash:", err)
-		return exitFailure
+	if _, err := toml.DecodeFile(t.configFile, &c); err != nil {
+		return fmt.Errorf("unable to decode config file: %w", err)
 	}
 
 	// override the config file values with cli argument values, which have a higher precedence
@@ -96,33 +88,7 @@ func (t *Tool) applyConfig() int {
 		t.excludeComment = c.ExcludeComment
 	}
 
-	return 0
-}
-
-func (t *Tool) Run() int {
-	args := t.flags() // initialize
-	t.applyConfig()   // read config file if set
-
-	var err error
-	switch {
-	case len(args) == 0:
-		err = errors.New("how did you get here?")
-	case len(args) == 1:
-		err = errors.New("expects one of 'fmt' or 'merge'")
-	case args[0] == "fmt":
-		err = t.fmt(args[1:])
-	case args[0] == "merge":
-		err = t.merge(args[1:])
-	default:
-		err = errors.New("subcmd must be 'fmt' or 'merge'")
-	}
-
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "crash:", err)
-		return exitFailure
-	}
-
-	return exitSuccess
+	return nil
 }
 
 func (t *Tool) openMod(file string) (*modfile.Content, error) {
@@ -155,9 +121,10 @@ func (t *Tool) fmt(args []string) error {
 		return errors.New("must specify only one go.mod file")
 	}
 
-	t.modFile = args[0]
+	// set the go.mod file
+	t.outFile = args[0]
 
-	content, err := t.openMod(t.modFile)
+	content, err := t.openMod(t.outFile)
 	if err != nil {
 		return err
 	}
@@ -183,6 +150,7 @@ func (t *Tool) merge(args []string) error {
 	if err != nil {
 		return err
 	}
+	t.outFile = args[0]
 
 	next, err := t.openMod(args[1])
 	if err != nil {
@@ -200,7 +168,7 @@ func (t *Tool) merge(args []string) error {
 
 func (t *Tool) write(content *modfile.Content) error {
 	if t.writeFile {
-		f, err := os.OpenFile(t.modFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
+		f, err := os.OpenFile(t.outFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
 		if err != nil {
 			return err
 		}
