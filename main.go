@@ -6,11 +6,12 @@ package main
 import (
 	"os"
 
-	"github.com/shoenig/go-modtool/cli"
+	"cattlecloud.net/go/babycli"
+	"github.com/shoenig/go-modtool/commands"
 )
 
 func main() {
-	tool := new(cli.Tool)
-	rc := tool.Run()
+	args := babycli.Arguments()
+	rc := commands.Invoke(args)
 	os.Exit(rc)
 }

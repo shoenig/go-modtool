@@ -1,7 +1,7 @@
 // Copyright (c) Seth Hoenig
 // SPDX-License-Identifier: MPL-2.0
 
-package cli
+package commands
 
 import (
 	"io"
@@ -45,15 +45,15 @@ func compare(t *testing.T, exp, actual string) {
 
 func TestTool_fmt_everything(t *testing.T) {
 	modFile := setup(t, "tests/everything.mod")
+	args := []string{modFile}
 
 	tool := &Tool{
 		writeFile:         true,
 		replaceComment:    "This is a comment about replacements.",
 		submodulesComment: "This is a comment about submodules.",
 		toolComment:       "This is a comment about tools.",
-		modFile:           modFile,
+		arguments:         args,
 	}
-	args := []string{modFile}
 
 	err := tool.fmt(args)
 	must.NoError(t, err)
@@ -63,10 +63,11 @@ func TestTool_fmt_everything(t *testing.T) {
 
 func TestTool_fmt_minimal(t *testing.T) {
 	modFile := setup(t, "tests/minimal.mod")
+	args := []string{modFile}
 
 	tool := &Tool{
 		writeFile: true,
-		modFile:   modFile,
+		arguments: args,
 	}
 
 	err := tool.fmt([]string{modFile})
