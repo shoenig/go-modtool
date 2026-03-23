@@ -12,6 +12,8 @@ builds:
       - darwin
       - freebsd
       - windows
+    ldflags:
+      - -X github.com/shoenig/go-modtool/commands.Version={{.Version}}
 checksum:
   name_template: 'checksums.txt'
 snapshot:
