@@ -16,5 +16,5 @@ github.com/shoenig/semantic v1.2.1 h1:iDF/IitQLjl6qbJ2Geu1he5W/XciKhpz4IwXVyERZb
 github.com/shoenig/semantic v1.2.1/go.mod h1:gvoxf6lUq6J79VZuCMv9Ef3JfpRjnWzlc2rLEfQT+q0=
 github.com/shoenig/test v1.12.2 h1:ZVT8NeIUwGWpZcKaepPmFMoNQ3sVpxvqUh/MAqwFiJI=
 github.com/shoenig/test v1.12.2/go.mod h1:UxJ6u/x2v/TNs/LoLxBNJRV9DiwBBKYxXSyczsBHFoI=
-golang.org/x/mod v0.34.0 h1:xIHgNUUnW6sYkcM5Jleh05DvLOtwc6RitGHbDk4akRI=
-golang.org/x/mod v0.34.0/go.mod h1:ykgH52iCZe79kzLLMhyCUzhMci+nQj+0XkbXpNYtVjY=
+golang.org/x/mod v0.36.0 h1:JJjpVx6myfUsUdAzZuOSTTmRE0PfZeNWzzvKrP7amb4=
+golang.org/x/mod v0.36.0/go.mod h1:moc6ELqsWcOw5Ef3xVprK5ul/MvtVvkIXLziUOICjUQ=
