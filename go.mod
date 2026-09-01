@@ -8,7 +8,7 @@ require (
 	github.com/hashicorp/go-set/v3 v3.0.1
 	github.com/shoenig/semantic v1.2.1
 	github.com/shoenig/test v1.13.2
-	golang.org/x/mod v0.37.0
+	golang.org/x/mod v0.40.0
 )
 
 require (
