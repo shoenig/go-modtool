@@ -1,6 +1,6 @@
 module github.com/shoenig/go-modtool
 
-go 1.26
+go 1.26.0
 
 require (
 	cattlecloud.net/go/babycli v0.2.0
@@ -8,7 +8,7 @@ require (
 	github.com/hashicorp/go-set/v3 v3.0.1
 	github.com/shoenig/semantic v1.2.1
 	github.com/shoenig/test v1.13.2
-	golang.org/x/mod v0.37.0
+	golang.org/x/mod v0.41.0
 )
 
 require (
